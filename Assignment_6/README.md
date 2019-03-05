@@ -1,4 +1,4 @@
-# Character Animation 
+# Title Interactions 
 ![Interactions Gif](/media/assignment6.gif)
 
 ### Description
