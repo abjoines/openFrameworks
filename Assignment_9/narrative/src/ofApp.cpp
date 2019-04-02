@@ -118,9 +118,8 @@ void ofApp::update(){
     if (scene7) {
         if (rad > 20){
             rad -= 2;
-        } else if (rad < 60){
-            rad += 2;
         }
+        
         if (sec > 52){
             ovalH += 20;
             ovalW += 20;
