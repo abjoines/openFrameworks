@@ -1,6 +1,6 @@
 # Project 2: API
 
-[![Project 2](https://img.youtube.com/vi/9XM8Ffbd5uo&feature=youtu.be/0.jpg)](https://www.youtube.com/watch?v=9XM8Ffbd5uo&feature=youtu.be)
+[![Project 2](https://img.youtube.com/vi/9XM8Ffbd5uo/0.jpg)](https://www.youtube.com/watch?v=9XM8Ffbd5uo&feature=youtu.be)
 
 
 ### Description
