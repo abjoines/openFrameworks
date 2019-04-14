@@ -23,6 +23,8 @@ class ofApp : public ofBaseApp{
     
         ofParameter<float> o3density;
         ofParameter<float> pmDensity;
+        ofParameter<float> Vis;
+        ofxToggle animate;
         ofxPanel gui;
     
 };

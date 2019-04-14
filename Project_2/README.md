@@ -1,6 +1,7 @@
 # Project 2: API
 
-![Project2 Gif](/media/proj2.gif)
+[![Project 2](https://img.youtube.com/vi/9XM8Ffbd5uo&feature=youtu.be/0.jpg)](https://www.youtube.com/watch?v=9XM8Ffbd5uo&feature=youtu.be)
+
 
 ### Description
 
