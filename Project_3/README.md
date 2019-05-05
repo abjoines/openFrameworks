@@ -1,11 +1,10 @@
 # Project 3: Game
 
 ![start screen](/media/titleScreen.gif)
-![game screen](/media/gameScreen.gif)
-![end screen](/media/endScreen.gif)
+[![Project 3](https://img.youtube.com/vi/uilm-LE0aFU/0.jpg)](https://www.youtube.com/watch?v=uilm-LE0aFU&feature=youtu.be)
 
 
 
 ### Description
 
-I currently have all of the graphic elements finished. All I have left to do are the interactions. The game is like the peripheral vision test but there are rotating triangles which pop up and when the circle (player's mouse pos) hits one of the triangles a point will be scored. When the user misses a triangle or a certain number of triangles (I haven't decided) the game will end with the option to restart.
+This is the final version of my game. It starts with the title screen which has instructions to collect the triangles and press the spacebar to start. Once you press the spacebar the game begins. It is a time based game where you want to collect as many triangles as possible in 30 seconds. There is a timer and a current score counter. The timer right now is based on seconds but I think I might change it so that it count more accurately from the beginning of the game state. Once the time is up it returns to the same screen as the title screen except it says game over and your final score. 

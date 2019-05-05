@@ -1,6 +1,26 @@
 #pragma once
 
 #include "ofMain.h"
+class particle {
+private:
+    ofVec2f vel;
+    //    int rad = 10;
+    
+public:
+    particle();
+    ofPoint pos;
+    bool alive = false;
+    void update();
+    void draw();
+    int getX();
+    int getY();
+    int getR();
+    int lifetime;
+    int time;
+    
+    float getMouseX();
+    float getMouseY();
+};
 
 
 class ofApp : public ofBaseApp{
@@ -22,6 +42,7 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
         ofTrueTypeFont myFont;
+        ofTrueTypeFont myFontBig;   
         ofTrueTypeFont myFontSmall;
         ofTrueTypeFont myFontXSmall;
 };

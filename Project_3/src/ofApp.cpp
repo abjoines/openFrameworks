@@ -3,14 +3,86 @@
 #include <stdio.h>
 
 ofFbo fbo;
-int degStep, scene, radar;
+int degStep, scene, radar, state, deaths;
 long sec;
+float mouseX, mouseY;
+
+const int numParticles = 1;
+particle myParticle[numParticles];
+
+int particle::getX() {
+    return (pos.x);
+}
+int particle::getY(){
+    return (pos.y);
+}
+
+float particle::getMouseX(){
+    return (mouseX);
+}
+float particle::getMouseY(){
+    return (mouseY);
+}
+
+particle::particle(){
+    
+}
+
+void particle::update(){
+    if(!alive)
+        return;
+    
+    time = ofGetFrameNum()/60;
+    lifetime = time % 10;
+    
+    //wall collisions
+    if (pos.x > ofGetWidth()){
+        pos.x = ofGetWidth();
+        vel.x *= -1;
+    }
+    
+    if (pos.x < 0){
+        pos.x = 0;
+        vel.x *= -1;
+    }
+    
+    if (pos.y > ofGetHeight()){
+        pos.y = ofGetHeight();
+        vel.y*=-1;
+    }
+    
+    if (pos.y < 0){
+        pos.y=0;
+        vel.y *= -1;
+    }
+    
+    if ((pos.x > (ofGetMouseX()-60) && pos.x < (ofGetMouseX()+60)) && (pos.y > (ofGetMouseY()-60) && pos.y < (ofGetMouseY()+60))){
+        alive = false; //kill self if moused over
+        deaths +=1;
+    }
+    
+}
+
+void particle::draw(){
+    if (alive){
+        ofSetLineWidth(3);
+        ofSetColor(216, 71, 151);
+        ofNoFill();
+        ofPushMatrix();
+        ofTranslate(pos.x, pos.y);
+        ofRotateDeg(degStep);
+        ofDrawTriangle(20, 20, 30, 40, 10, 40);
+        ofPopMatrix();
+    }
+    
+}
 
 //--------------------------------------------------------------
 void ofApp::setup(){
     myFont.load("Syncopate-Bold.ttf", 30);
     myFontSmall.load("Syncopate-Bold.ttf", 18);
     myFontXSmall.load("Syncopate-Bold.ttf", 10);
+    myFontBig.load("Syncopate-Bold.ttf", 60);
     
     ofSetCircleResolution(60);
     ofSetFrameRate(60);
@@ -22,27 +94,49 @@ void ofApp::setup(){
     ofClear(255,255,255, 0);
     fbo.end();
     
+    deaths = 0;
     degStep = 0;
     radar = 0;
+    state = 0;
 }
-bool startState = true;
-bool gameState = false;
-bool endState = false;
 //--------------------------------------------------------------
 void ofApp::update(){
     sec = ofGetFrameNum()/60;
     
     degStep+=1.5;
-    radar += 3;
     
-    if (radar>=ofGetWidth()){
-        radar=0;
+    if (state == 1){
+    radar += 3;
+    degStep+=3;
+        
+        for(int i=0; i < numParticles; i++){
+            if(myParticle[i].alive == false){
+                myParticle[i].alive = true;
+                myParticle[i].pos = ofPoint(ofRandom(50,ofGetWidth()-50),ofRandom(100,ofGetHeight()-100));
+                return;
+            }
+        }
+        
+        for (int i = 0; i < numParticles; i++){
+            myParticle[i].update();
+        }
+        
+        if (radar>=ofGetWidth()){
+            radar=0;
+        }
+        
+        if (sec>30){
+            state += 1;
+        }
     }
+    
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    if (startState) {
+//TITLE STATE
+    if (state==0) {
         
         //background
         ofSetLineWidth(5);
@@ -84,18 +178,21 @@ void ofApp::draw(){
         string instructions = "Collect triangles.";
         myFont.drawString(enter, ofGetWidth()/2-80, ofGetHeight()/2+40);
         myFontSmall.drawString(instructions, ofGetWidth()/2-175, 50);
-        myFontXSmall.drawString("click to", ofGetWidth()/2-40, ofGetHeight()/2);
+        myFontXSmall.drawString("SPACEBAR to", ofGetWidth()/2-60, ofGetHeight()/2);
         
     }
     
-    if (gameState) {
+//GAME STATE
+    if (state==1) {
         ofSetLineWidth(5);
-        ofSetColor(66, 235, 244);
         
         ofPushMatrix();
+        ofSetColor(66, 235, 244, 95);
         ofTranslate(radar,0);
         ofDrawGridPlane(50, 40);
         ofPopMatrix();
+        
+        ofSetColor(66, 235, 244);
         
         fbo.begin();
         ofSetColor(0,0,0, 20); // background color with alpha
@@ -104,54 +201,36 @@ void ofApp::draw(){
         ofNoFill();
         ofSetLineWidth(3);
         ofSetColor(216, 71, 151);
-    
-    //TRIANGLES
-        if (sec < 3){
-        ofPushMatrix();
-        ofTranslate(150, 150);
-        ofRotateDeg(-degStep);
-        ofDrawTriangle(20, 20, 30, 40, 10, 40);
-        ofPopMatrix();
-        }
-        if (sec > 2 && sec < 6){
-        ofPushMatrix();
-        ofTranslate(200, 500);
-        ofRotateDeg(degStep);
-        ofDrawTriangle(20, 20, 30, 40, 10, 40);
-        ofPopMatrix();
-        }
-        if (sec > 4 && sec < 8){
-        ofPushMatrix();
-        ofTranslate(600, 400);
-        ofRotateDeg(-degStep);
-        ofDrawTriangle(20, 20, 30, 40, 10, 40);
-        ofPopMatrix();
-        }
-        if (sec > 6 && sec < 10){
-        ofPushMatrix();
-        ofTranslate(800, 200);
-        ofRotateDeg(degStep);
-        ofDrawTriangle(20, 20, 30, 40, 10, 40);
-        ofPopMatrix();
+        
+        for (int i=0; i <numParticles; i++){
+            myParticle[i].draw();
         }
         
     //PLAYER CIRCLE
         ofFill();
         ofSetColor(66, 235, 244, 75);
-        ofDrawCircle(mouseX, mouseY, 75);
+        ofDrawCircle(mouseX, mouseY, 60);
         ofNoFill();
         ofSetLineWidth(5);
         ofSetColor(66, 235, 244);
-        ofDrawCircle(mouseX, mouseY, 75);
+        ofDrawCircle(mouseX, mouseY, 60);
         
+        string seconds = ofToString(30 - sec);
+        myFontSmall.drawString("TIME REMAINING: " + seconds, ofGetWidth()/2-175, 50);
+        
+        string score = ofToString(deaths);
+        myFontSmall.drawString("CURRENT SCORE: " + score, ofGetWidth()/2-170, ofGetHeight()-30);
         
         ofFill();
         fbo.end();
         ofSetColor(255, 255, 255);
         fbo.draw(0,0);
+        
+        
     }
     
-    if (endState) {
+//END STATE
+    if (state==2) {
         //background
         ofSetLineWidth(5);
         ofSetColor(66, 235, 244);
@@ -191,18 +270,19 @@ void ofApp::draw(){
         string instructions = "game over";
         myFont.drawString(enter, ofGetWidth()/2-165, ofGetHeight()/2+40);
         myFontSmall.drawString(instructions, ofGetWidth()/2-100, 50);
-        myFontXSmall.drawString("click to", ofGetWidth()/2-40, ofGetHeight()/2);
+        myFontXSmall.drawString("SPACEBAR to", ofGetWidth()/2-60, ofGetHeight()/2);
+        
+        string score = ofToString(deaths);
+        myFont.drawString("FINAL SCORE: ", ofGetWidth()/2-175, 100);
+        myFontBig.drawString(score, ofGetWidth()/2-70, 200);
+    
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if (key == ' '){
-        gameState == true;
-    }
-    
-    if (key == OF_KEY_RETURN){
-        gameState == true;
+    if (key == ' ' && state < 1){
+        state += 1;
     }
     
 }
